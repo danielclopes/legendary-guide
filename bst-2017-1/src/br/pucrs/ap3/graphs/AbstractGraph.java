@@ -112,9 +112,18 @@ public abstract class AbstractGraph {
 		return r;
 	}
 
-	public List<Integer> depth(int i) {
-		checkNode(i);
-		// TODO
-		return null;
+	public List<Integer> depth(int s) {
+		checkNode(s);
+		List<Integer> r = new ArrayList<>();
+		depth0(s, r);
+		return r;
+	}
+
+	private void depth0(int s, List<Integer> r) {
+		r.add(s);
+		for (Integer v : getNext(s)) {
+			if (!r.contains(v))
+				depth0(v, r);
+		}
 	}
 }
