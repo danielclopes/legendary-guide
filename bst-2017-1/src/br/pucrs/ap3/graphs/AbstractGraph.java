@@ -63,16 +63,17 @@ public abstract class AbstractGraph {
 		}
 		return r;
 	}
-	
-	//enum {
-	//	
-	//}
+
+	// enum {
+	//
+	// }
 	private static final int WHITE = 10;
 	private static final int GRAY = 20;
 	private static final int BLACK = 30;
-	
-	// TODO marcar se foi visitado, para evitar ciclos
+
 	public List<Integer> breadth(int s) {
+		List<Integer> r = new ArrayList<>();
+
 		checkNode(s);
 		// 1 - 7
 		// TODO trocar para enum!
@@ -90,9 +91,8 @@ public abstract class AbstractGraph {
 		// 8, 9
 		List<Integer> Q = new LinkedList<Integer>();
 		Q.add(s);
-		//10
-		while (  ! Q.isEmpty() ) {
-			// TODO: confirmar se eh uma fila!
+		// 10
+		while (!Q.isEmpty()) {
 			int u = Q.remove(0);
 			for (Integer v : getNext(u)) {
 				if (color[v] == WHITE) {
@@ -103,12 +103,13 @@ public abstract class AbstractGraph {
 				}
 			}
 			color[u] = BLACK;
+			r.add(u);
 		}
-		
-		System.out.println(Arrays.toString(d));
-		System.out.println(Arrays.toString(p));
-		
-		return null;
+
+		// System.out.println(Arrays.toString(d));
+		// System.out.println(Arrays.toString(p));
+
+		return r;
 	}
 
 	public List<Integer> depth(int i) {
