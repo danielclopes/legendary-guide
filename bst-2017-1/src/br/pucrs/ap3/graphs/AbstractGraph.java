@@ -1,9 +1,11 @@
 package br.pucrs.ap3.graphs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Grafo n�o-dirigido (Directed graph - Digrafo).
@@ -121,9 +123,83 @@ public abstract class AbstractGraph {
 
 	private void depth0(int s, List<Integer> r) {
 		r.add(s);
-		for (Integer v : getNext(s)) {
+		for (Integer v : getNext(s))
 			if (!r.contains(v))
 				depth0(v, r);
-		}
 	}
+
+	private int counter;
+	private int[] color;
+	private int[] discovery;
+	private int[] finish;
+
+	public List<Integer> topological() {
+		counter = 1;
+		color = new int[m.length];
+		discovery = new int[m.length];
+		finish = new int[m.length];
+		for (int u = 1; u < color.length; u++) {
+			color[u] = WHITE;
+			discovery[u] = -1;
+			finish[u] = -1;
+		}
+		List<Integer> sorted = new ArrayList<>();
+		for (int u = 1; u < color.length; u++) {
+			if (color[u] == WHITE) {
+				topological0(u, sorted);
+			}
+		}
+		return sorted;
+	}
+
+	private void topological0(int node, List<Integer> sorted) {
+		sorted.add(node);
+		color[node] = GRAY;
+		discovery[node] = counter;
+		counter++;
+		for (Integer adjacentNode : getNext(node)) {
+			if (!sorted.contains(adjacentNode)) {
+				topological0(adjacentNode, sorted);
+			}
+		}
+		color[node] = BLACK;
+		finish[node] = counter;
+		counter++;
+	}
+
+	public List<Edge> kruskal() {
+		List<Edge> A = new ArrayList<Edge>();
+		List<Set<Integer>> sets = new ArrayList<Set<Integer>>();
+		sets.add(null);
+
+		for (int v = 1; v < m.length; v++) {
+			Set<Integer> s = new HashSet<Integer>();
+			s.add(v);
+			sets.add(s);
+		}
+		System.out.println(sets);
+
+		List<Edge> edges = new ArrayList<Edge>();
+		for (int i = 1; i < m.length; i++) {
+			for (int j = i + 1; j < m.length; j++) {
+				if (m[i][j] != 0) {
+					System.out.printf("{%d, %d} w = %d %n", i, j, m[i][j]);
+					edges.add(new Edge(i, j, m[i][j]));
+				}
+			}
+		}
+		Collections.sort(edges);
+		System.out.println(edges);
+
+		for (Edge edge : edges) {
+			if (sets.get(edge.u) != sets.get(edge.v)) {
+				A.add(edge);
+				sets.get(edge.u).addAll(sets.get(edge.v));
+				sets.set(edge.v, sets.get(edge.u));
+			}
+		}
+
+		return A;
+	}
+
 }
